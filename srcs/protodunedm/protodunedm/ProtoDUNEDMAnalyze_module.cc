@@ -266,10 +266,26 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 
       if (std::fabs(fSimPDG) == 13) fEMu = momentumStart.E();
       if (std::fabs(fSimPDG) == 211) fEPi = momentumStart.E();
+        
+	  // Loop over trajectory points
+      int t(0);
+      while (particle.Position(t).Z() < fZedge) t++;
+      int exit_trajpoint = t;
 
+      const TLorentzVector& momentumExit = particle.Momentum(exit_trajpoint);
+      const TLorentzVector& positionExit = particle.Position(exit_trajpoint);
+
+      const double trackLengthToExit = (positionExit - positionStart).Rho();
+      fdEdx = (momentumStart - momentumExit).E() / trackLengthToExit;
+
+      if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumExit).E() / trackLengthToExit;
+      if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumExit).E() / trackLengthToExit;
+
+	  //if (momentumStart.X() < 1. && momentumStart.Y() < 1.) fForwardGoingPrimary = true;
+	  
 	  if (fEndXYZT[2] > fZedge) { // track leaves back of protodune  
         // Loop over trajectory points
-		int t(0);
+		/*int t(0);
 		while (particle.Position(t).Z() < fZedge) t++;
 		int exit_trajpoint = t;
 
@@ -280,7 +296,7 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 
 		fdEdx = (momentumStart - momentumExit).E() / trackLengthToExit;
 		if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumExit).E() / trackLengthToExit;
-		if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumExit).E() / trackLengthToExit;
+		if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumExit).E() / trackLengthToExit;*/
 
 		std::cout << "Exiting Particle: " << fSimPDG << ". t = " << t << ". Tracklength = " << trackLengthToExit<< ", dEdx = " << fdEdx << std::endl;
 		fPrimaryExit = true;
@@ -289,10 +305,10 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 		if (std::fabs(fSimPDG) == 211) fPrimaryPiExit = true;
 	  } else { // primary particle contained in TPC, look for Michel or determine if pion
 	    std::cout << "Contained Particle: " << fSimPDG << std::endl;
-		fdEdx = (momentumStart - momentumEnd).E() / fTrackLength;
+		//fdEdx = (momentumStart - momentumEnd).E() / fTrackLength;
 
-		if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumEnd).E() / fTrackLength;
-		if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumEnd).E() / fTrackLength;
+		//if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumEnd).E() / fTrackLength;
+		//if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumEnd).E() / fTrackLength;
 	    
 		fPrimaryContained = true;
 		fNContParts++;
