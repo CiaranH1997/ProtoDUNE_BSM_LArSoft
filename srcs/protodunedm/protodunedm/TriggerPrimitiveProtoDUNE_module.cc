@@ -5,6 +5,9 @@
 //
 // Generated at Mon Apr  8 02:24:48 2024 by Ciaran Hasnip using cetskelgen
 // from cetlib version 3.18.02.
+//
+// Purpose is to access the deltaTick across the longest Muon track
+// in a HNL event. This informs the people designing the trigger.
 ////////////////////////////////////////////////////////////////////////
 
 #include "larcore/CoreUtils/ServiceUtil.h"
@@ -76,11 +79,7 @@ private:
   art::InputTag fSimulationProducerLabel; ///< The name of the producer that tracked
                                           ///< simulated particles through the detector
   art::InputTag fDetsimProducerLabel;
-  //art::InputTag fHitProducerLabel;        ///< The name of the producer that created hits
-  //art::InputTag fClusterProducerLabel;    ///< The name of the producer that
-                                          ///< created clusters
  
-  //std::vector<TGraph*> vMuonCollectionTrack;
   TH1D *hMuonDeltaTick;
   TH1D *hMuonDeltaWire;
 
@@ -152,7 +151,6 @@ ana::TriggerPrimitiveProtoDUNE::TriggerPrimitiveProtoDUNE(fhicl::ParameterSet co
 
   // TPC 1 is the first proper TPC - TPC 0 is for track stubs
   // First arrange fiducial volume
-  //const geo::TPCGeo& tpc = fGeometryService->Cryostat().TPC(1);
   const geo::TPCGeo& tpc = vTPCs.at(1);
   fFiducialBoundaries.push_back(0.); // central x
   fFiducialBoundaries.push_back(tpc.Width() - 0.05*tpc.Width()); // outer x
@@ -178,7 +176,6 @@ ana::TriggerPrimitiveProtoDUNE::TriggerPrimitiveProtoDUNE(fhicl::ParameterSet co
  
   fFirstWire_TPC1 = &plane.FirstWire();
 
-  //const geo::TPCGeo& tpc2 = fGeometryService->Cryostat().TPC(2);
   const geo::TPCGeo& tpc2 = vTPCs.at(2);
   const geo::PlaneGeo& plane_tpc2 = tpc2.Plane(2);
   fFirstWire_TPC2 = &plane_tpc2.FirstWire();
@@ -267,29 +264,17 @@ void ana::TriggerPrimitiveProtoDUNE::analyze(art::Event const& e)
 
 	// Must be a primary muon in the fiducial volume
 	if (!fInFV) continue;
-    //if (positionStart != PrimV) continue;
     if (fMother != 0) continue;
     if (std::fabs(fSimPDG) != 13) continue;
 
 	std::cout << "Looking at a primary muon." << std::endl;
 
-    //fSimTrackID = particle.TrackId();
-	//fSimPDG = particle.PdgCode();
-	//fProcess = particle.Process();
-    //fMother = particle.Mother();
-	//fTrackLength = trackLength;
-
-	//geo::WireID wire = fGeometryService->NearestWireID(PrimV);
-
-    //unsigned int start_channel(0), end_channel(0);
     unsigned short start_tick(0), end_tick(0);
 
-	//geo::WireID start_wireID;
 	geo::WireGeo const *start_wire(nullptr);
 	geo::WireGeo const *end_wire(nullptr);
 
 	double total_edep_distance(0), total_wire_distance(0);
-	//int wires_crossed(0);
 
 	for ( auto const& channel : (*simChannelHandle) ) {
 	  // get channel number - wire?

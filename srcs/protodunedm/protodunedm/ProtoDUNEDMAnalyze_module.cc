@@ -285,18 +285,6 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 	  
 	  if (fEndXYZT[2] > fZedge) { // track leaves back of protodune  
         // Loop over trajectory points
-		/*int t(0);
-		while (particle.Position(t).Z() < fZedge) t++;
-		int exit_trajpoint = t;
-
-        const TLorentzVector& momentumExit = particle.Momentum(exit_trajpoint);
-        const TLorentzVector& positionExit = particle.Position(exit_trajpoint);
-
-        const double trackLengthToExit = (positionExit - positionStart).Rho();
-
-		fdEdx = (momentumStart - momentumExit).E() / trackLengthToExit;
-		if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumExit).E() / trackLengthToExit;
-		if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumExit).E() / trackLengthToExit;*/
 
 		std::cout << "Exiting Particle: " << fSimPDG << ". t = " << t << ". Tracklength = " << trackLengthToExit<< ", dEdx = " << fdEdx << std::endl;
 		fPrimaryExit = true;
@@ -305,10 +293,6 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 		if (std::fabs(fSimPDG) == 211) fPrimaryPiExit = true;
 	  } else { // primary particle contained in TPC, look for Michel or determine if pion
 	    std::cout << "Contained Particle: " << fSimPDG << std::endl;
-		//fdEdx = (momentumStart - momentumEnd).E() / fTrackLength;
-
-		//if (std::fabs(fSimPDG) == 13) fdEdxMu = (momentumStart - momentumEnd).E() / fTrackLength;
-		//if (std::fabs(fSimPDG) == 211) fdEdxPi = (momentumStart - momentumEnd).E() / fTrackLength;
 	    
 		fPrimaryContained = true;
 		fNContParts++;
@@ -319,7 +303,6 @@ void ana::ProtoDUNEDMAnalyze::analyze(art::Event const& e)
 	} else {
 	  if (fPrimaryContained) {
         if ((PrimEnd - positionStart).Rho() < 0.3) { // stats within 3mm of mu end point
-        //if (PrimEnd == positionStart) { // Is a daughter of primary particle
 	      if (std::fabs(fSimPDG) == 11 && momentumStart.E() < 0.070 && momentumStart.E() > 0.005 && fdEdxMu < 0.004) {
 	        std::cout << "Michel Candidate: " << fSimPDG << std::endl;
             // Michel electron found

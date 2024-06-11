@@ -227,9 +227,6 @@ void evgen::HepMCFileGen::beginJob()
   fbx = tfs->make<TH1D>("hbx",";x-Position (cm)",40,-400,400);
   fby = tfs->make<TH1D>("hby",";y-Position (cm)",40,-400,400);
   fbz = tfs->make<TH1D>("hbz",";z-Position (cm)",40,-400,400);
-  //fxy = tfs->make<TH2D>("hxy",";x-Position (cm);y-Position (cm)",10,-400,400,10,-400,400);
-  //fzy = tfs->make<TH2D>("hzy",";z-Position (cm);y-Position (cm)",10,-400,400,10,-400,400);
-  //fxz = tfs->make<TH2D>("hxz",";x-Position (cm);z-Position (cm)",10,-400,400,10,-400,400);
   fx = tfs->make<TH1D>("hx",";x-Position (cm)",40,-400,400);
   fy = tfs->make<TH1D>("hy",";y-Position (cm)",50,-100,900);
   fz = tfs->make<TH1D>("hz",";z-Position (cm)",50,-100,900);
